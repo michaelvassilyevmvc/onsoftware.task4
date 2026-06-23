@@ -1,8 +1,154 @@
-﻿@{
+﻿@using onsoftware.task4.Areas.Identity.Data
+@using onsoftware.task4.Helpers
+@model List<onsoftware.task4.Areas.Identity.Data.ApplicationUser>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <form asp-action="PanelAction" method="post" asp-controller="Home" id="panelActionForm">
+        <div class="btn-group">
+
+            <button name="action" value="block" type="submit"
+                    class="btn btn-outline-primary" title="block">
+                <i class="bi bi-lock-fill"></i>
+                Block
+            </button>
+
+            <button name="action" value="unblock" type="submit"
+                    class="btn btn-outline-primary" title="unblock">
+                <i class="bi bi-unlock-fill"></i>
+            </button>
+
+            <button name="action" value="delete" type="submit"
+                    class="btn btn-outline-danger" title="delete">
+                <i class="bi bi-trash-fill"></i>
+            </button>
+            <button name="action" value="clear" type="submit"
+                    class="btn btn-outline-danger" title="clear all">
+                <i class="bi bi-x-square-fill"></i>
+            </button>
+
+        </div>
+    </form>
+    <form asp-action="Index" method="get" id="indexForm">
+        <input type="text"
+               name="filter"
+               class="form-control w-auto"
+               value="@ViewBag.Filter"
+               placeholder="Filter"/>
+    </form>
 </div>
+
+
+@if (Model.Count > 0)
+{
+    <table class="table align-top">
+        <thead>
+        <tr>
+            <th>
+                <input type="checkbox" id="selectAll"/>
+            </th>
+            <th>Name</th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-filter="@ViewBag.Filter"
+                   asp-route-sort="@ViewBag.EmailSort"
+                   form="indexForm"
+                   class="link-underline-light text-dark">
+                    Email
+
+                    @if (ViewBag.CurrentSort == "email")
+                    {
+                        <span>↑</span>
+                    }
+                    else if (ViewBag.CurrentSort == "email_desc")
+                    {
+                        <span>↓</span>
+                    }
+                </a>
+            </th>
+            <th>Status</th>
+            <th>Last seen</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr class="@(user.Status == Status.Blocked ? "blocked-user" : "user")">
+                <td><input type="checkbox"
+                           name="selectedUsers"
+                           value="@user.Id" form="panelActionForm"></td>
+                <td>
+                    <div>
+                        <div class="name"><b>@user.FirstName , @user.LastName</b></div>
+                        <div class="user-position">@user.Position</div>
+                    </div>
+                </td>
+                <td>@user.Email</td>
+                <td>@user.Status</td>
+                <td data-bs-toggle="tooltip" data-bs-title="@user.LastSeen.ToString("dd.MM.yyyy HH:mm:ss")">
+                    <div>
+                        <div>
+                            
+                            @TimeHelper.ToRelativeTime(user.UpdatedAt ?? DateTime.UtcNow)
+                        </div>
+                        <div>
+                                <canvas class="activity-chart"
+                                        data-values="@string.Join(",", user.Last7DaysLogs)"
+                                        width="80"
+                                        height="30">
+                                </canvas>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@section Scripts
+{
+    <script>
+        $(function () {
+            $('#selectAll').change(function () {
+                $('input[name="selectedUsers"]')
+                    .prop('checked', $(this).prop('checked'));
+            });
+            document.querySelectorAll('[data-bs-toggle="tooltip"]')
+                .forEach(el => new bootstrap.Tooltip(el));
+
+            document.querySelectorAll('.activity-chart')
+                .forEach(canvas => {
+
+                    const values = canvas.dataset.values
+                        .split(',')
+                        .map(Number);
+
+                    new Chart(canvas, {
+                        type: 'bar',
+                        data: {
+                            labels: ['','','','','','',''],
+                            datasets: [{
+                                data: values
+                            }]
+                        },
+                        options: {
+                            responsive: false,
+                            plugins: {
+                                legend: { display: false }
+                            },
+                            scales: {
+                                x: { display: false },
+                                y: { display: false }
+                            }
+                        }
+                    });
+                });
+        })
+    </script>
+}

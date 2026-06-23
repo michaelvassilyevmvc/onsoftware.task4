@@ -19,6 +19,7 @@ html {
 
 body {
   margin-bottom: 60px;
+  font-family: 'Roboto', sans-serif;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -28,4 +29,53 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+/*tab navigation*/
+.login-logout-card .card-header {
+  padding: 0 0 12px 0;
+}
+
+.login-logout-card ul.nav-tabs {
+  margin: 0 0 -12px 0;
+}
+
+.login-logout-card li.nav-item {
+  width: 50%;
+}
+
+.login-logout-card a.nav-link {
+  font-size: 1rem;
+  color: #495057;
+  text-align: center;
+  padding: 1rem;
+}
+
+.login-logout-card .card-body {
+  padding: 10px 20px;
+}
+
+.blocked-user {
+  color: #6c757d;
+  opacity: 50%;
+}
+
+.user{
+  font-weight: bold;
+}
+.user .user-position{
+  opacity: 30%;
+}
+
+.blocked-user .name {
+  text-decoration: line-through;
+}
+
+.toolbar-btn {
+  border-radius: 12px;
+  padding: 10px 16px;
+}
+
+.toolbar-search {
+  border-radius: 12px;
 }

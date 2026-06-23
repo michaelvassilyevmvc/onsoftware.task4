@@ -1,0 +1,81 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+<section>
+    <div class="container">
+        <div class="card border-light-subtle shadow-sm">
+            <div class="row g-0">
+                <div class="col-12 col-md-6 p-5 d-flex flex-column vh-100">
+                    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                            <h2>Create a new account.</h2>
+                            <hr/>
+                            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                            <div class="form-floating mb-3">
+                                <input asp-for="Input.FirstName" class="form-control"
+                                       autocomplete="firstname" aria-required="true"
+                                />
+                                <label asp-for="Input.FirstName"></label>
+                                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input asp-for="Input.LastName" class="form-control" autocomplete="lastname"
+                                       aria-required="true"/>
+                                <label asp-for="Input.LastName"></label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input asp-for="Input.Email" class="form-control" autocomplete="username"
+                                       aria-required="true"
+                                />
+                                <label asp-for="Input.Email">Email</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input asp-for="Input.Password" class="form-control" autocomplete="new-password"
+                                       aria-required="true"
+                                />
+                                <label asp-for="Input.Password">Password</label>
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input asp-for="Input.ConfirmPassword" class="form-control"
+                                       autocomplete="new-password"
+                                       aria-required="true"/>
+                                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input asp-for="Input.Company" class="form-control" autocomplete="company"
+                                       aria-required="true"
+                                />
+                                <label asp-for="Input.Company">Company</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input asp-for="Input.Position" class="form-control" autocomplete="position"
+                                       aria-required="true"
+                                />
+                                <label asp-for="Input.Position">Position</label>
+                            </div>
+                            <div class="justify-content-center d-flex">
+                                <button id="registerSubmit" type="submit" class="w-50 btn btn-lg btn-primary">
+                                    Register
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 text-bg-primary">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}

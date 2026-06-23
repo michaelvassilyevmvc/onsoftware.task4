@@ -77,6 +77,8 @@ public class HomeController : Controller
 
     private async Task<IActionResult> BlockUsers(List<ApplicationUser> users)
     {
+        var currentUserId = _userManager.GetUserId(User);
+
         foreach (var user in users)
         {
             user.SetBlock();
@@ -85,6 +87,14 @@ public class HomeController : Controller
 
         await _context.SaveChangesAsync();
         TempData.Success("Users blocked successfully");
+
+        if (users.Any(x => x.Id == currentUserId))
+        {
+            await _signInManager.SignOutAsync();
+            TempData.Success("Your account has been blocked");
+
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -116,14 +126,14 @@ public class HomeController : Controller
                 TempData.Error(string.Join("; ", result.Errors.Select(x => x.Description)));
                 return RedirectToAction(nameof(Index));
             }
+        }
 
-            if (user.Id == currentUserId)
-            {
-                await _signInManager.SignOutAsync();
-                TempData.Success("Your account has been deleted");
+        if (users.Any(x => x.Id == currentUserId))
+        {
+            await _signInManager.SignOutAsync();
+            TempData.Success("Your account has been deleted");
 
-                return RedirectToPage("/Account/Login", new { area = "Identity" });
-            }
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
         }
 
         TempData.Success("Users deleted successfully");

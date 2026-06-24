@@ -118,11 +118,7 @@ namespace onsoftware.task4.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
-                if (result.IsNotAllowed)
-                {
-                    ModelState.AddModelError(string.Empty, "Please confirm your email before login.");
-                    return Page();
-                }
+                
                 
                 if (result.RequiresTwoFactor)
                 {

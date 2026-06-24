@@ -54,7 +54,7 @@ namespace onsoftware.task4.Areas.Identity.Pages.Account
                 var currentUser = await _context.Users.FindAsync(userId);
                 if (currentUser is not null)
                 {
-                    currentUser.Status = Status.Active;
+                    currentUser.Status = currentUser.Status == Status.Blocked ? Status.Blocked : Status.Active;
                     await _context.Logs.AddAsync(new Log
                     {
                         UserId = userId,

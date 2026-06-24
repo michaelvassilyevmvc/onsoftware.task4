@@ -22,11 +22,16 @@ namespace onsoftware.task4.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly AuthDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger,AuthDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -116,6 +121,18 @@ namespace onsoftware.task4.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                    _context.Logs.Add(new Log
+                    {
+                        UserId = user!.Id,
+                        Message = "Login",
+                        CreatedAt = DateTime.UtcNow
+                    });
+
+                    await _context.SaveChangesAsync();
+                    
                     return LocalRedirect(returnUrl);
                 }
                 
